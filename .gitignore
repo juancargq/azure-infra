@@ -1,0 +1,9 @@
+# Ignorar archivos de estado de Terraform
+terraform.tfstate
+terraform.tfstate.backup
+
+# Ignorar archivos de bloqueo del proveedor
+.terraform.lock.hcl
+
+# Ignorar la carpeta donde Terraform almacena archivos descargados
+.terraform/
