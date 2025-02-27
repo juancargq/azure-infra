@@ -7,3 +7,6 @@ terraform.tfstate.backup
 
 # Ignorar la carpeta donde Terraform almacena archivos descargados
 .terraform/
+
+# Ignorar par de claves SSH de la máquina virtual
+azure-vm-key.*
