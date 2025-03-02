@@ -15,13 +15,13 @@ resource "azurerm_linux_virtual_machine" "linux_virtual_machine" {
 
   admin_ssh_key {
     username   = "ubuntu"
-    public_key = file("azure-vm-key.pub")
+    public_key = file("~/.ssh/azure-vm-key.pub")
   }
 
   source_image_reference {
     publisher = "Canonical"
-    offer     = "0001-com-ubuntu-server-focal"
-    sku       = "20_04-lts"
-    version   = "20.04.202408300"
+    offer     = "0001-com-ubuntu-server-jammy"
+    sku       = "22_04-lts"
+    version   = "22.04.202502280"
   }
 }
