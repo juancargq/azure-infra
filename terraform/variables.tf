@@ -42,3 +42,13 @@ variable "security_group_name" {
   description = "El nombre del grupo de seguridad de la red"
   default     = "SG-CP2"
 }
+
+variable "azure_container_registry_name" {
+  description = "El nombre del Azure Container Registry"
+  default     = "cp2acr"
+}
+
+variable "azure_kubernetes_service_name" {
+  description = "El nombre del cluster de Kubernetes"
+  default     = "K8S-CP2-cluster"
+}
