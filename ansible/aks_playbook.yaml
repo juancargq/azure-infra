@@ -1,0 +1,23 @@
+- name: Crear el namespace de los recursos
+  hosts: aks_cluster
+  tasks:
+   - name: Crear el namespace
+     kubernetes.core.k8s:
+       name: postgres-cp2
+       api_version: v1
+       kind: Namespace
+
+- name: Crear el Deployment del backend y sus dependencias
+  hosts: aks_cluster
+  tasks:
+   - name: Crear el PVC
+     kubernetes.core.k8s:
+       src: manifests/pvc.yaml
+
+   - name: Crear el ConfigMap
+     kubernetes.core.k8s:
+       src: manifests/configmap.yaml
+
+   - name: Crear el Deployment
+     kubernetes.core.k8s:
+       src: manifests/deployment.yaml

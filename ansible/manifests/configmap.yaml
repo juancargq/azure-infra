@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-admin-password
+  namespace: postgres-cp2
+data:
+  admin_password: "password"
