@@ -11,3 +11,6 @@ terraform.tfstate.backup
 
 # Ignorar el fichero de variables de ansible
 tf_ansible_vars.yaml
+
+# Ignorar el inventario de Ansible (es dinámico)
+inventory.ini
