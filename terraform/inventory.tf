@@ -1,10 +1,11 @@
 # Genera el inventario de Ansible de forma dinámica
-resource "local_file" "ansible_inventory" {
+resource "local_file" "tf_ansible_inventory" {
 
     content = templatefile("../ansible/inventory.tmpl", {
         linux_virtualm_ip = azurerm_linux_virtual_machine.linux_virtual_machine.public_ip_address
         linux_virtualm_username = azurerm_linux_virtual_machine.linux_virtual_machine.admin_username
         linux_virtualm_priv_key = local_file.mv_private_key.filename
+        aks_host = azurerm_kubernetes_cluster.aks.kube_config[0].host
     })
     filename = "../ansible/inventory.ini"
     file_permission = "0644"
@@ -23,4 +24,13 @@ resource "local_file" "tf_ansible_vars" {
   file_permission = "0644"
 
   depends_on = [ azurerm_container_registry.acr ]
+}
+
+# Genera o actualiza el kubeconfig cada vez que se crea un nuevo AKS
+resource "local_file" "tf_aks_kubeconfig" {
+  filename = pathexpand("~/.kube/config")
+  content = azurerm_kubernetes_cluster.aks.kube_config_raw
+  file_permission = "0600"
+
+  depends_on = [ azurerm_kubernetes_cluster.aks ]
 }
