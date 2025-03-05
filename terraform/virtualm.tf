@@ -15,7 +15,7 @@ resource "azurerm_linux_virtual_machine" "linux_virtual_machine" {
 
   admin_ssh_key {
     username   = "ubuntu"
-    public_key = file("~/.ssh/azure-vm-key.pub")
+    public_key = trimspace(tls_private_key.ssh.public_key_openssh)
   }
 
   source_image_reference {

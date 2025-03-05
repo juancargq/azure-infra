@@ -4,9 +4,10 @@ terraform.tfstate.backup
 
 # Ignorar archivos de bloqueo del proveedor
 .terraform.lock.hcl
+.terraform.tfstate.lock.info
 
 # Ignorar la carpeta donde Terraform almacena archivos descargados
 .terraform/
 
-# Ignorar par de claves SSH de la máquina virtual
-azure-vm-key.*
+# Ignorar el fichero de variables de ansible
+tf_ansible_vars.yaml

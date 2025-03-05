@@ -1,0 +1,44 @@
+- name: Hacer login en el ACR con Podman
+  hosts: localhost
+  vars_files: tf_ansible_vars.yaml
+  tasks:
+    - name: Logear Podman en el ACR
+      containers.podman.podman_login:
+        registry: "{{ acr_registry }}"
+        username: "{{ acr_username }}"
+        password: "{{ acr_password }}"
+
+- name: Disponibilizar imágenes de Nginx y PostgreSQL en el ACR
+  hosts: localhost
+  vars_files: tf_ansible_vars.yaml
+  vars:
+    - tag: cp2
+    - nginx_image: docker.io/library/nginx:latest
+    - nginx_acr_image: "{{ acr_registry }}/cp2-repo/nginx:{{ tag }}"
+    - postgresql_image: docker.io/bitnami/postgresql:latest
+    - postgresql_acr_image: "{{ acr_registry }}/cp2-repo/postgresql:{{ tag }}"
+  tasks:    
+    - name: Descargar imágenes
+      containers.podman.podman_image:
+        name: "{{ item }}"
+      loop:
+        - "{{ nginx_image }}"
+        - "{{ postgresql_image }}"
+
+    - name: Tagear imagen de Nginx
+      containers.podman.podman_tag:
+        image: "{{ nginx_image }}"
+        target_names: "{{ nginx_acr_image }}"
+
+    - name: Tagear imagen de PostgreSQL
+      containers.podman.podman_tag:
+        image: "{{ postgresql_image }}"
+        target_names: "{{ postgresql_acr_image }}"
+
+    - name: Subir imágenes al ACR
+      containers.podman.podman_image:
+        name: "{{ item }}"
+        push: true
+      loop:
+        - "{{ nginx_acr_image }}"
+        - "{{ postgresql_acr_image }}"

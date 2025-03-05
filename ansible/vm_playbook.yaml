@@ -1,0 +1,31 @@
+- name: Instalación de Podman en la máquina Linux
+  hosts: linux_vm
+  become: true
+  tasks:
+   - name: Instalar Podman
+     ansible.builtin.apt:
+       name: podman
+       update_cache: true
+
+- name: Desplegar el contenedor Podman de Nginx
+  hosts: linux_vm
+  vars_files: tf_ansible_vars.yaml
+  vars:
+    - tag: cp2
+    - nginx_acr_image: "{{ acr_registry }}/cp2-repo/nginx:{{ tag }}"
+  tasks:
+    - name: Hacer login en el ACR con Podman
+      containers.podman.podman_login:
+        registry: "{{ acr_registry }}"
+        username: "{{ acr_username }}"
+        password: "{{ acr_password }}"
+
+    - name: Descargar imagen del ACR
+      containers.podman.podman_image:
+        name: "{{ nginx_acr_image }}"
+
+    - name: Levantar contenedor de Nginx
+      containers.podman.podman_container:
+        name: nginx-container
+        image: "{{ nginx_acr_image }}"
+        publish: 8080:80
