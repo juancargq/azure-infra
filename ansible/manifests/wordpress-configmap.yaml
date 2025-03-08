@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wordpress-cm
+  namespace: cp2
+data:
+  wordpress_db_host: svc-mysql

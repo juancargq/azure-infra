@@ -8,32 +8,40 @@
         username: "{{ acr_username }}"
         password: "{{ acr_password }}"
 
-- name: Disponibilizar imágenes de Nginx y PostgreSQL en el ACR
+- name: Disponibilizar imágenes de Nginx y MySQL en el ACR
   hosts: localhost
   vars_files: tf_ansible_vars.yaml
   vars:
     - tag: cp2
     - nginx_image: docker.io/library/nginx:latest
     - nginx_acr_image: "{{ acr_registry }}/cp2-repo/nginx:{{ tag }}"
-    - postgresql_image: docker.io/bitnami/postgresql:latest
-    - postgresql_acr_image: "{{ acr_registry }}/cp2-repo/postgresql:{{ tag }}"
+    - mysql_image: docker.io/library/mysql:latest
+    - mysql_acr_image: "{{ acr_registry }}/cp2-repo/mysql:{{ tag }}"
+    - wordpress_image: docker.io/library/wordpress:latest
+    - wordpress_acr_image: "{{ acr_registry }}/cp2-repo/wordpress:{{ tag }}"
   tasks:    
     - name: Descargar imágenes
       containers.podman.podman_image:
         name: "{{ item }}"
       loop:
         - "{{ nginx_image }}"
-        - "{{ postgresql_image }}"
+        - "{{ mysql_image }}"
+        - "{{ wordpress_image }}"
 
     - name: Tagear imagen de Nginx
       containers.podman.podman_tag:
         image: "{{ nginx_image }}"
         target_names: "{{ nginx_acr_image }}"
 
-    - name: Tagear imagen de PostgreSQL
+    - name: Tagear imagen de MySQL
       containers.podman.podman_tag:
-        image: "{{ postgresql_image }}"
-        target_names: "{{ postgresql_acr_image }}"
+        image: "{{ mysql_image }}"
+        target_names: "{{ mysql_acr_image }}"
+
+    - name: Tagear imagen de WordPress
+      containers.podman.podman_tag:
+        image: "{{ wordpress_image }}"
+        target_names: "{{ wordpress_acr_image }}"
 
     - name: Subir imágenes al ACR
       containers.podman.podman_image:
@@ -41,4 +49,5 @@
         push: true
       loop:
         - "{{ nginx_acr_image }}"
-        - "{{ postgresql_acr_image }}"
+        - "{{ mysql_acr_image }}"
+        - "{{ wordpress_acr_image }}"

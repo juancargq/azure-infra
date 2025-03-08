@@ -3,21 +3,40 @@
   tasks:
    - name: Crear el namespace
      kubernetes.core.k8s:
-       name: postgres-cp2
+       name: cp2
        api_version: v1
        kind: Namespace
 
-- name: Crear el Deployment del backend y sus dependencias
+- name: Crear el Deployment de MySQL y sus dependencias
   hosts: aks_cluster
   tasks:
    - name: Crear el PVC
      kubernetes.core.k8s:
        src: manifests/pvc.yaml
 
-   - name: Crear el ConfigMap
+   - name: Crear el Secret
      kubernetes.core.k8s:
-       src: manifests/configmap.yaml
+       src: manifests/mysql-secret.yaml
 
    - name: Crear el Deployment
      kubernetes.core.k8s:
-       src: manifests/deployment.yaml
+       src: manifests/mysql-deployment.yaml
+
+   - name: Crear el Service
+     kubernetes.core.k8s:
+       src: manifests/mysql-service.yaml
+
+- name: Crear el Deployment de WordPress y sus dependencias
+  hosts: aks_cluster
+  tasks:
+   - name: Crear el ConfigMap
+     kubernetes.core.k8s:
+       src: manifests/wordpress-configmap.yaml
+
+   - name: Crear el Deployment
+     kubernetes.core.k8s:
+       src: manifests/wordpress-deployment.yaml
+
+   - name: Crear el Service
+     kubernetes.core.k8s:
+       src: manifests/wordpress-service.yaml
