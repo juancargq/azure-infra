@@ -1,0 +1,10 @@
+- name: Se encripta el archivo de variables con Ansible Vault
+  hosts: localhost
+  tasks:
+    - name: Encriptar tf_ansible_vars.yaml
+      ansible.builtin.command:
+        cmd: ansible-vault encrypt tf_ansible_vars.yaml --vault-password-file vault_pass.txt
+
+- import_playbook: acr_playbook.yaml
+- import_playbook: vm_playbook.yaml
+- import_playbook: aks_playbook.yaml
